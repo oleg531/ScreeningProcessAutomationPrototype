@@ -1,15 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26228.12
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E9E9BA61-4DA3-462C-B9AF-D65B635B3A1D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{97E2D7F1-C40B-437B-B25B-68081CABF1B3}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScreeningAutomation.Data", "src\ScreeningAutomation.Data\ScreeningAutomation.Data.csproj", "{88A797E1-8DD1-4EAE-91F6-0FDE99CC456C}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ScreeningAutomation.Data", "src\ScreeningAutomation.Data\ScreeningAutomation.Data.xproj", "{88A797E1-8DD1-4EAE-91F6-0FDE99CC456C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScreeningAutomation.API", "src\ScreeningAutomation.API\ScreeningAutomation.API.csproj", "{2942EFDC-8AB4-4374-A04E-DFEC3068E95D}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ScreeningAutomation.API", "src\ScreeningAutomation.API\ScreeningAutomation.API.xproj", "{2942EFDC-8AB4-4374-A04E-DFEC3068E95D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

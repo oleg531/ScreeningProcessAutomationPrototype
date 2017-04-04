@@ -21,6 +21,10 @@
     "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.0.0-preview2-final"
   },
 
+  "ConnectionStrings": {
+    "Default": "Server=v-ollaz;Database=UniqueRestaurant;User ID=ccPortal;Password=*2l807Eh*qB>B*U;MultipleActiveResultSets=true"
+  },
+
   "frameworks": {
     "netcoreapp1.0": {
       "imports": [

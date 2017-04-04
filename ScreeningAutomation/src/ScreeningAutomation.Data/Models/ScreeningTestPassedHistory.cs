@@ -7,5 +7,8 @@
         public int EmployeeId { get; set; }
         public int ScreeningTestId { get; set; }
         public DateTimeOffset DatePass { get; set; }
+
+        public Employee Employee { get; set; }
+        public ScreeningTest ScreeningTest { get; set; }
     }
 }

@@ -5,9 +5,12 @@
 
     public class ScreeningTestPassingActive : BaseEntity
     {
-        public int ImployeeId { get; set; }
+        public int EmployeeId { get; set; }
         public int ScreeningTestId { get; set; }
         public ScreeningTestPassingStatus Status { get; set; }
         public DateTimeOffset DatePass { get; set; }
+
+        public Employee Employee { get; set; }
+        public ScreeningTest ScreeningTest { get; set; }
     }
 }

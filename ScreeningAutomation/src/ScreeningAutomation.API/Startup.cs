@@ -10,6 +10,9 @@ using Microsoft.Extensions.Logging;
 
 namespace ScreeningAutomation.API
 {
+    using Data;
+    using Microsoft.EntityFrameworkCore;
+
     public class Startup
     {
         public Startup(IHostingEnvironment env)
@@ -27,6 +30,9 @@ namespace ScreeningAutomation.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<ScreeningAutomationDbContext>(
+                options => options.UseSqlServer(Configuration["Default"]));
+            
             // Add framework services.
             services.AddMvc();
         }

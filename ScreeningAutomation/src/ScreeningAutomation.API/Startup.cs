@@ -31,7 +31,7 @@ namespace ScreeningAutomation.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ScreeningAutomationDbContext>(
-                options => options.UseSqlServer(Configuration["Default"]));
+                options => options.UseSqlServer(Configuration["ConnectionStrings:Default"]));
             
             // Add framework services.
             services.AddMvc();

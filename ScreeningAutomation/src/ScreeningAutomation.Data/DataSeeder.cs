@@ -36,6 +36,16 @@ namespace ScreeningAutomation.Data
                                 CreatedDate = DateTimeOffset.UtcNow
                             },
                             CreatedDate = DateTimeOffset.UtcNow
+                        },
+                        new ScreeningTestPassingPlan
+                        {
+                            ScreeningTest = new ScreeningTest
+                            {
+                                Name = "Screening test 2",
+                                ValidPeriod = TimeSpan.FromMinutes(5),
+                                CreatedDate = DateTimeOffset.UtcNow
+                            },
+                            CreatedDate = DateTimeOffset.UtcNow
                         }
                     }
                 };

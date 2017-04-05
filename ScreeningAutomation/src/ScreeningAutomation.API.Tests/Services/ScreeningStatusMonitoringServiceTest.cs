@@ -1,14 +1,13 @@
 ﻿namespace ScreeningAutomation.API.Tests.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
     using System.Threading.Tasks;
     using API.Services;
     using Data;
     using Data.Models;
     using Data.Repositories;
+    using Microsoft.Extensions.Options;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Options;
 
     [TestClass]
     public class ScreeningStatusMonitoringServiceTest
@@ -19,8 +18,20 @@
             var context = new DbContextFactory().Create(null);
             var screeningTestPassingActiveRepository = new Repository<ScreeningTestPassingActive>(context);
             var screeningTestPassingPlanRepository = new Repository<ScreeningTestPassingPlan>(context);
+
+            // TODO move to common config
+            var emailService = new EmailSender(new OptionsWrapper<EmailSenderOptions>(new EmailSenderOptions
+            {
+                Server = "smtp.gmail.com",
+                Port = 587,
+                Credentials = new EmailCredentials
+                {
+                    Address = "EmailSenderTesting.123",
+                    Password = "9){fmJ#kf,72G[Cm"
+                }
+            }));
             var service = new ScreeningStatusMonitoringService(screeningTestPassingActiveRepository,
-                screeningTestPassingPlanRepository);
+                screeningTestPassingPlanRepository, emailService);
 
             await service.CheckScreeningsStatus();
         }

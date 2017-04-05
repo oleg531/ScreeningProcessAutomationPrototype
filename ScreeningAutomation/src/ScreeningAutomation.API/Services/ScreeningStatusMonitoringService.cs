@@ -2,25 +2,26 @@
 {
     using System;
     using System.Linq;
-    using System.Security.Cryptography.X509Certificates;
     using System.Threading.Tasks;
     using Data.Models;
     using Data.Repositories;
     using Microsoft.EntityFrameworkCore;
-    using Remotion.Linq.Clauses;
 
     public class ScreeningStatusMonitoringService : IScreeningStatusMonitoringService
     {
         private readonly IRepository<ScreeningTestPassingActive> _screeningTestPassingActiveRepository;
         private readonly IRepository<ScreeningTestPassingPlan> _screeningTestPassingPlanRepository;
+        private readonly IEmailSender _emailSender;
 
         public ScreeningStatusMonitoringService(
             IRepository<ScreeningTestPassingActive> screeningTestPassingActiveRepository,
-            IRepository<ScreeningTestPassingPlan> screeningTestPassingPlanRepository
-            )
+            IRepository<ScreeningTestPassingPlan> screeningTestPassingPlanRepository,
+            IEmailSender emailSender
+        )
         {
             _screeningTestPassingActiveRepository = screeningTestPassingActiveRepository;
             _screeningTestPassingPlanRepository = screeningTestPassingPlanRepository;
+            _emailSender = emailSender;
         }
 
         public async Task CheckScreeningsStatus()
@@ -37,8 +38,8 @@
                 .Where(testsGroup => testsGroup.ActiveTest == null)
                 .Select(testsGroup => testsGroup.PlanedTest)
                 .ToListAsync();
-            
-            
+
+
             var overdueTests = await _screeningTestPassingActiveRepository.GetAll()
                 .Include(activeTest => activeTest.ScreeningTest)
                 .Include(activeTest => activeTest.Employee)
@@ -46,7 +47,19 @@
                                      activeTest.DatePass.Add(activeTest.ScreeningTest.ValidPeriod))
                 .ToListAsync();
 
-            // TODO to send emails about this tests
+            var notPassedRecipients = notPassedTests.GroupBy(notPassedTest => notPassedTest.Employee.Email);
+            var overdueRecipients = overdueTests.GroupBy(overdue => overdue.Employee.Email);
+
+            var subjectBase = " screening tests it's needed to be passed";
+            var notPassedEmailTasks =
+                notPassedRecipients.Select(r => Task.Run(
+                    () => _emailSender.SendEmailAsync(r.Key, $"New {subjectBase}",
+                        string.Join(", ", r.Select(x => x.ScreeningTest.Name)))));
+            var overdueTasks = overdueRecipients.Select(r => Task.Run(
+                () => _emailSender.SendEmailAsync(r.Key, $"Overdue {subjectBase}",
+                    string.Join(", ", r.Select(x => x.ScreeningTest.Name)))));
+
+            await Task.WhenAll(notPassedEmailTasks.Concat(overdueTasks));
         }
     }
 }

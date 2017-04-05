@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-
-namespace ScreeningAutomation.API
+﻿namespace ScreeningAutomation.API
 {
+    using System;
+    using System.IO;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;    
     using Data;
     using Data.Models;
     using Data.Repositories;
     using Microsoft.EntityFrameworkCore;
+    using Options;
     using Services;
 
     public class Startup
@@ -33,6 +31,25 @@ namespace ScreeningAutomation.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddOptions();
+            services.Configure<EmailSenderOptions>(emailSenderOptions =>
+            {
+                emailSenderOptions.Server = Configuration["email:server"];
+                int port;
+                if (!int.TryParse(Configuration["email:port"], out port))
+                {
+                    // TODO change exception type
+                    throw new ArgumentException(
+                        "Email sender: port variable contains incorrect value. Check configuration file.");
+                }
+                emailSenderOptions.Port = port;
+                emailSenderOptions.Credentials = new EmailCredentials
+                {
+                    Address = Configuration["email:emailCredentials:address"],
+                    Password = Configuration["email:emailCredentials:password"]
+                };
+            });
+
             services.AddDbContext<ScreeningAutomationDbContext>(
                 options => options.UseSqlServer(Configuration["ConnectionStrings:Default"]));
             
@@ -45,6 +62,7 @@ namespace ScreeningAutomation.API
             
             // add services
             services.AddScoped<IScreeningStatusMonitoringService, ScreeningStatusMonitoringService>();
+            services.AddScoped<IEmailSender, EmailSender>();
 
             // Add framework services.
             services.AddMvc();

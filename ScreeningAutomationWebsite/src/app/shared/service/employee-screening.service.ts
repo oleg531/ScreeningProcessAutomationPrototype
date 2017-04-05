@@ -10,6 +10,6 @@ export class EmployeeScreeningService {
     }
 
     getEmployeeScreenings() {
-        return this.http.get('').map(response => <EmployeeScreening>response.json());
+        return this.http.get('http://localhost:3500/api/EmployeeScreening').map(response => <EmployeeScreening>response.json());
     }
 }

@@ -1,10 +1,12 @@
 ﻿namespace ScreeningAutomation.API.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Data.Models;
     using Data.Repositories;
+    using DTO;
     using Microsoft.EntityFrameworkCore;
 
     public class ScreeningStatusMonitoringService : IScreeningStatusMonitoringService
@@ -60,6 +62,26 @@
                     string.Join(", ", r.Select(x => x.ScreeningTest.Name)))));
 
             await Task.WhenAll(notPassedEmailTasks.Concat(overdueTasks));
+        }
+
+        public async Task<IEnumerable<EmployeeScreeningDto>> GetEmployeeScreenings()
+        {
+            // todo add not passed tests
+            return await _screeningTestPassingActiveRepository.GetAll()
+                .Include(activeTest => activeTest.Employee)
+                .Include(activeTest => activeTest.ScreeningTest)
+                .Select(activeTest => new EmployeeScreeningDto
+                {
+                    Email = activeTest.Employee.Email,
+                    Alias = activeTest.Employee.Alias,
+                    ScreeningTestName = activeTest.ScreeningTest.Name,
+                    DatePass = activeTest.DatePass,
+                    ExpirationDate = activeTest.DatePass.Add(activeTest.ScreeningTest.ValidPeriod),
+                    Status = DateTimeOffset.UtcNow > activeTest.DatePass.Add(activeTest.ScreeningTest.ValidPeriod)
+                        ? ScreeningTestPassingStatus.Overdue.ToString()
+                        : ScreeningTestPassingStatus.Valid.ToString()
+                })
+                .ToListAsync();
         }
     }
 }

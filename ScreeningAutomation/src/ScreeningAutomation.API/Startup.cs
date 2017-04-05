@@ -57,6 +57,8 @@ namespace ScreeningAutomation.API
             loggerFactory.AddDebug();
 
             app.UseMvc();
+
+            DataSeeder.SeedData(app);
         }
     }
 }

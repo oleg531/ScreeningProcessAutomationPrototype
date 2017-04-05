@@ -9,9 +9,10 @@ using ScreeningAutomation.Data.Models;
 namespace ScreeningAutomation.Data.Migrations
 {
     [DbContext(typeof(ScreeningAutomationDbContext))]
-    partial class ScreeningAutomationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170405121734_EmployeeAddEmail")]
+    partial class EmployeeAddEmail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")

@@ -7,6 +7,7 @@
         public string Alias { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Email { get; set; }
 
         public virtual List<ScreeningTestPassingActive> ScreeningTestPassingActive { get; set; }
         public virtual List<ScreeningTestPassedHistory> ScreeningTestPassedHistory { get; set; }

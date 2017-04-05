@@ -2,10 +2,12 @@
 {
     using System;
     using System.Linq;
+    using System.Security.Cryptography.X509Certificates;
     using System.Threading.Tasks;
     using Data.Models;
     using Data.Repositories;
     using Microsoft.EntityFrameworkCore;
+    using Remotion.Linq.Clauses;
 
     public class ScreeningStatusMonitoringService : IScreeningStatusMonitoringService
     {
@@ -25,8 +27,15 @@
         {
             var notPassedTests = await _screeningTestPassingPlanRepository.GetAll()
                 .Include(planningTest => planningTest.Employee)
-                .Where(planningTest => _screeningTestPassingActiveRepository.GetAll()
-                    .All(activeTest => activeTest.ScreeningTestId != planningTest.ScreeningTestId))
+                .Include(planningTest => planningTest.ScreeningTest)
+                .GroupJoin(_screeningTestPassingActiveRepository.GetAll(),
+                    plannedTest => new {plannedTest.EmployeeId, plannedTest.ScreeningTestId},
+                    activeTest => new {activeTest.EmployeeId, activeTest.ScreeningTestId},
+                    (plannedTest, activeTestCollection) => new {plannedTest, activeTestCollection})
+                .SelectMany(group => group.activeTestCollection.DefaultIfEmpty(),
+                    (group, activeTest) => new {PlanedTest = group.plannedTest, ActiveTest = activeTest})
+                .Where(testsGroup => testsGroup.ActiveTest == null)
+                .Select(testsGroup => testsGroup.PlanedTest)
                 .ToListAsync();
             
             

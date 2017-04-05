@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScreeningAutomation.Data", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScreeningAutomation.API", "src\ScreeningAutomation.API\ScreeningAutomation.API.csproj", "{2942EFDC-8AB4-4374-A04E-DFEC3068E95D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScreeningAutomation.API.Tests", "src\ScreeningAutomation.API.Tests\ScreeningAutomation.API.Tests.csproj", "{BB2E7D5A-02F9-47E2-A07C-F5ACD12EB3D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{2942EFDC-8AB4-4374-A04E-DFEC3068E95D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2942EFDC-8AB4-4374-A04E-DFEC3068E95D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2942EFDC-8AB4-4374-A04E-DFEC3068E95D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB2E7D5A-02F9-47E2-A07C-F5ACD12EB3D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB2E7D5A-02F9-47E2-A07C-F5ACD12EB3D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB2E7D5A-02F9-47E2-A07C-F5ACD12EB3D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB2E7D5A-02F9-47E2-A07C-F5ACD12EB3D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,5 +38,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{88A797E1-8DD1-4EAE-91F6-0FDE99CC456C} = {E9E9BA61-4DA3-462C-B9AF-D65B635B3A1D}
 		{2942EFDC-8AB4-4374-A04E-DFEC3068E95D} = {E9E9BA61-4DA3-462C-B9AF-D65B635B3A1D}
+		{BB2E7D5A-02F9-47E2-A07C-F5ACD12EB3D3} = {E9E9BA61-4DA3-462C-B9AF-D65B635B3A1D}
 	EndGlobalSection
 EndGlobal

@@ -1,4 +1,4 @@
-export class EmployeeScreeningTest{
+export class EmployeeScreening{
     alias : string;
     email : string;
     screeningTestName: string;

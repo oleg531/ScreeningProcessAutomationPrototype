@@ -14,6 +14,7 @@ namespace ScreeningAutomation.API
     using Data.Models;
     using Data.Repositories;
     using Microsoft.EntityFrameworkCore;
+    using Services;
 
     public class Startup
     {
@@ -40,7 +41,10 @@ namespace ScreeningAutomation.API
             services.AddScoped<IRepository<ScreeningTest>, Repository<ScreeningTest>>();
             services.AddScoped<IRepository<ScreeningTestPassedHistory>, Repository<ScreeningTestPassedHistory>>();
             services.AddScoped<IRepository<ScreeningTestPassingActive>, Repository<ScreeningTestPassingActive>>();
-            services.AddScoped<IRepository<ScreeningTestPassingPlan>, Repository<ScreeningTestPassingPlan>>();            
+            services.AddScoped<IRepository<ScreeningTestPassingPlan>, Repository<ScreeningTestPassingPlan>>();        
+            
+            // add services
+            services.AddScoped<IScreeningStatusMonitoringService, ScreeningStatusMonitoringService>();
 
             // Add framework services.
             services.AddMvc();

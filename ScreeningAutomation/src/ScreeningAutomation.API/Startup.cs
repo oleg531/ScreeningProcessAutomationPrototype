@@ -11,6 +11,8 @@ using Microsoft.Extensions.Logging;
 namespace ScreeningAutomation.API
 {
     using Data;
+    using Data.Models;
+    using Data.Repositories;
     using Microsoft.EntityFrameworkCore;
 
     public class Startup
@@ -33,6 +35,13 @@ namespace ScreeningAutomation.API
             services.AddDbContext<ScreeningAutomationDbContext>(
                 options => options.UseSqlServer(Configuration["ConnectionStrings:Default"]));
             
+            // add repository
+            services.AddScoped<IRepository<Employee>, Repository<Employee>>();
+            services.AddScoped<IRepository<ScreeningTest>, Repository<ScreeningTest>>();
+            services.AddScoped<IRepository<ScreeningTestPassedHistory>, Repository<ScreeningTestPassedHistory>>();
+            services.AddScoped<IRepository<ScreeningTestPassingActive>, Repository<ScreeningTestPassingActive>>();
+            services.AddScoped<IRepository<ScreeningTestPassingPlan>, Repository<ScreeningTestPassingPlan>>();            
+
             // Add framework services.
             services.AddMvc();
         }

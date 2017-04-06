@@ -35,6 +35,7 @@ export class AppComponent implements OnInit {
     this.checkingProcess = true;
     this.employeeScreeningService.checkScreenings(this.commonEmail).subscribe(result => {
       this.checkingProcess = false;
+      this.loadGrid();
     }, error => console.error(error));
   }
 

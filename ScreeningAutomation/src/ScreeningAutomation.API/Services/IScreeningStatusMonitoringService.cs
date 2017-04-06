@@ -8,5 +8,6 @@
     {
         Task CheckScreeningsStatus(string commonEmail);
         Task<IEnumerable<EmployeeScreeningDto>> GetEmployeeScreenings();
+        Task PassTScreeningTest(int activeTestId);
     }
 }

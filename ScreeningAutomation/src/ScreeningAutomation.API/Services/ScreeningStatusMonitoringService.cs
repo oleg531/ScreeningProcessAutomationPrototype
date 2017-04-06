@@ -13,16 +13,19 @@
     {
         private readonly IRepository<ScreeningTestPassingActive> _screeningTestPassingActiveRepository;
         private readonly IRepository<ScreeningTestPassingPlan> _screeningTestPassingPlanRepository;
+        private readonly IRepository<ScreeningTestPassedHistory> _screeningTestPassedHistoryRepository;
         private readonly IEmailSender _emailSender;
 
         public ScreeningStatusMonitoringService(
             IRepository<ScreeningTestPassingActive> screeningTestPassingActiveRepository,
             IRepository<ScreeningTestPassingPlan> screeningTestPassingPlanRepository,
+            IRepository<ScreeningTestPassedHistory> screeningTestPassedHistoryRepository,
             IEmailSender emailSender
         )
         {
             _screeningTestPassingActiveRepository = screeningTestPassingActiveRepository;
             _screeningTestPassingPlanRepository = screeningTestPassingPlanRepository;
+            _screeningTestPassedHistoryRepository = screeningTestPassedHistoryRepository;
             _emailSender = emailSender;
         }
 
@@ -80,6 +83,7 @@
             return screeningTests
                 .Select(screeningTest => new EmployeeScreeningDto
                 {
+                    ActiveTestId = screeningTest.ScreeningTestPassingActive?.Id,
                     Email = screeningTest.ScreeningTestPassingPlan.Employee.Email,
                     Alias = screeningTest.ScreeningTestPassingPlan.Employee.Alias,
                     ScreeningTestName = screeningTest.ScreeningTestPassingPlan.ScreeningTest.Name,
@@ -94,6 +98,42 @@
                             ? ScreeningTestPassingStatus.Overdue.ToString()
                             : ScreeningTestPassingStatus.Valid.ToString()
                 });
+        }
+
+        public async Task PassTScreeningTest(int activeTestId)
+        {
+            var screeningTest = await _screeningTestPassingActiveRepository.GetAll()
+                .FirstOrDefaultAsync(x => x.Id == activeTestId);
+
+            if (screeningTest == null)
+            {
+                throw new KeyNotFoundException($"Could not find active test with id={activeTestId}");
+            }
+
+            using (var transaction = _screeningTestPassedHistoryRepository.BeginTransaction())
+            {
+                try
+                {
+                    await _screeningTestPassedHistoryRepository.SaveAsync(new ScreeningTestPassedHistory
+                    {
+                        DatePass = DateTimeOffset.UtcNow,
+                        CreatedDate = DateTimeOffset.UtcNow,
+                        EmployeeId = screeningTest.EmployeeId,
+                        ScreeningTestId = screeningTest.ScreeningTestId
+                    });
+
+                    screeningTest.DatePass = DateTimeOffset.UtcNow;
+                    await _screeningTestPassingActiveRepository.SaveAsync(screeningTest);
+
+
+                    transaction.Commit();
+                }
+                catch(Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
         }
 
         private IQueryable<ScreeningTestProxy> GetScreeningsForEmployee()

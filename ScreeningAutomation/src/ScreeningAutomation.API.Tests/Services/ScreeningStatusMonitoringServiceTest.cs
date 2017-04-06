@@ -18,6 +18,7 @@
             var context = new DbContextFactory().Create(null);
             var screeningTestPassingActiveRepository = new Repository<ScreeningTestPassingActive>(context);
             var screeningTestPassingPlanRepository = new Repository<ScreeningTestPassingPlan>(context);
+            var screeningTestPassedHistoryRepository = new Repository<ScreeningTestPassedHistory>(context);
 
             // TODO move to common config
             var emailService = new EmailSender(new OptionsWrapper<EmailSenderOptions>(new EmailSenderOptions
@@ -31,7 +32,7 @@
                 }
             }));
             var service = new ScreeningStatusMonitoringService(screeningTestPassingActiveRepository,
-                screeningTestPassingPlanRepository, emailService);
+                screeningTestPassingPlanRepository, screeningTestPassedHistoryRepository, emailService);
 
             await service.CheckScreeningsStatus("oleg.lazarenko@akvelon.com");
         }

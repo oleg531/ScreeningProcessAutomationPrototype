@@ -25,7 +25,7 @@
         <th>Screening test name</th>
         <th>Date pass</th>
         <th>Expiration date</th>
-        <th>Status</th>        
+        <th>Status</th>
         <th>Mark as passed</th>
       </tr>
       <tr *ngFor="let employeeScreening of employeeScreenings">
@@ -34,8 +34,10 @@
         <td>{{employeeScreening.screeningTestName}}</td>
         <td>{{employeeScreening.datePass ? (employeeScreening.datePass | date:'short') : '-'}}</td>
         <td>{{employeeScreening.expirationDate ? (employeeScreening.expirationDate | date:'short') : '-'}}</td>
-        <td>{{employeeScreening.status}}</td>        
-        <td><button type="button" class="btn btn-success">Passed</button></td>
+        <td>{{employeeScreening.status}}</td>
+        <td><button *ngIf="employeeScreening.status == 'Overdue'" type="button" class="btn btn-success" (click)="passTest(employeeScreening.activeTestId)">Passed
+          <i *ngIf="passingProcess" class="fa fa-spinner fa-spin fa-fw" aria-hidden="true"></i>
+          </button></td>
       </tr>
     </table>
   </div>

@@ -10,5 +10,6 @@
         public DateTimeOffset? DatePass { get; set; }
         public DateTimeOffset? ExpirationDate { get; set; }
         public string Status { get; set; }
+        public int? ActiveTestId { get; set; }
     }
 }

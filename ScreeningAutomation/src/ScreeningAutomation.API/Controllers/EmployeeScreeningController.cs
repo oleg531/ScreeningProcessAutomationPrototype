@@ -60,5 +60,13 @@ namespace ScreeningAutomation.API.Controllers
             await _screeningStatusMonitoringService.CheckScreeningsStatus(email);
             return Ok();
         }
+
+        [HttpPut()]
+        [Route("PassTest/{id}")]
+        public async Task<IActionResult> PassTest(int  id)
+        {
+            await _screeningStatusMonitoringService.PassTScreeningTest(id);
+            return Ok();
+        }
     }
 }

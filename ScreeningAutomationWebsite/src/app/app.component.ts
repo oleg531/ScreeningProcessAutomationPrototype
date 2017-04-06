@@ -11,10 +11,12 @@ export class AppComponent implements OnInit {
 
   private employeeScreenings: Array<EmployeeScreening>;
   private commonEmail: string;
+  private checkingProcess: boolean;
   constructor(
     private employeeScreeningService: EmployeeScreeningService
   ) {
     this.employeeScreenings = [];
+    this.checkingProcess = false;
   }
 
   ngOnInit() {
@@ -24,8 +26,9 @@ export class AppComponent implements OnInit {
   }
 
   checkScreenings() {
+    this.checkingProcess = true;
     this.employeeScreeningService.checkScreenings(this.commonEmail).subscribe(result => {
-
+      this.checkingProcess = false;
     }, error => console.error(error));
   }
 }

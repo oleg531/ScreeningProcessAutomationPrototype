@@ -14,7 +14,7 @@
       <label for="emailInput">Email</label>
       <input type="email" class="form-control" id="emailInput" placeholder="jane.doe@example.com" [(ngModel)]="commonEmail">
     </div>
-    <button type="button" class="btn btn-default" (click)="checkScreenings()">Check expired</button>
+    <button type="button" class="btn btn-default" (click)="checkScreenings()">Check expired<i *ngIf="checkingProcess" class="fa fa-spinner fa-spin fa-fw" aria-hidden="true"></i></button>
   </div>
   <br>
   <div class="table-responsive">

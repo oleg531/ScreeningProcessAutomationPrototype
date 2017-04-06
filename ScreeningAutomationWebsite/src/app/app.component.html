@@ -29,6 +29,16 @@
         <th>Mark as new</th>
         <th>Mark as passed</th>
       </tr>
+      <tr *ngFor="let employeeScreening of employeeScreenings">
+        <td>{{employeeScreening.alias}}</td>
+        <td>{{employeeScreening.email}}</td>
+        <td>{{employeeScreening.screeningTestName}}</td>
+        <td>{{employeeScreening.datePass || '-'}}</td>
+        <td>{{employeeScreening.expirationDate || '-'}}</td>
+        <td>{{employeeScreening.status}}</td>
+        <td><button type="button" class="btn btn-success">As new</button></td>
+        <td><button type="button" class="btn btn-success">Passed</button></td>
+      </tr>
     </table>
   </div>
 

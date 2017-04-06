@@ -51,6 +51,8 @@ namespace ScreeningAutomation.Data
                 };
 
                 dbContext.Add(employee);
+
+
                 dbContext.SaveChanges();
             }
         }

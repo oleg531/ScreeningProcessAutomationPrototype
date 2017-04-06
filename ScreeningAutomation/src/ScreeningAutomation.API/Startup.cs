@@ -74,6 +74,13 @@
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            //CORS            
+            app.UseCors(builder =>
+                builder.WithOrigins(Configuration["FrontEndSiteBaseAddress"])
+                    .AllowCredentials()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
+
             app.UseMvc();
 
             DataSeeder.SeedData(app);

@@ -30,13 +30,13 @@
 
             var emailMessage = new MimeMessage();
 
-            emailMessage.From.Add(new MailboxAddress("Screening automation tool", "DoNotReply@screening.microsoft.com"));
+            emailMessage.From.Add(new MailboxAddress("Screening automation tool", "EmployeeSCreening@yandex.ru"));
             emailMessage.To.Add(new MailboxAddress("", email));
             emailMessage.Subject = subject;
             emailMessage.Body = new TextPart(TextFormat.Text) { Text = message };
             using (var client = new SmtpClient())
             {
-                client.LocalDomain = "some.domain.com";
+                //client.LocalDomain = "some.domain.com";                
                 await
                     client.ConnectAsync(_emailOptionsAccessor.Value.Server, _emailOptionsAccessor.Value.Port, false);
 

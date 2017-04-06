@@ -12,9 +12,9 @@
   <div class="form-inline">
     <div class="form-group">
       <label for="emailInput">Email</label>
-      <input type="email" class="form-control" id="emailInput" placeholder="jane.doe@example.com">
+      <input type="email" class="form-control" id="emailInput" placeholder="jane.doe@example.com" [(ngModel)]="commonEmail">
     </div>
-    <button type="button" class="btn btn-default">Check expired</button>
+    <button type="button" class="btn btn-default" (click)="checkScreenings()">Check expired</button>
   </div>
   <br>
   <div class="table-responsive">
@@ -25,8 +25,7 @@
         <th>Screening test name</th>
         <th>Date pass</th>
         <th>Expiration date</th>
-        <th>Status</th>
-        <th>Mark as new</th>
+        <th>Status</th>        
         <th>Mark as passed</th>
       </tr>
       <tr *ngFor="let employeeScreening of employeeScreenings">
@@ -35,8 +34,7 @@
         <td>{{employeeScreening.screeningTestName}}</td>
         <td>{{employeeScreening.datePass ? (employeeScreening.datePass | date:'short') : '-'}}</td>
         <td>{{employeeScreening.expirationDate ? (employeeScreening.expirationDate | date:'short') : '-'}}</td>
-        <td>{{employeeScreening.status}}</td>
-        <td><button type="button" class="btn btn-success">As new</button></td>
+        <td>{{employeeScreening.status}}</td>        
         <td><button type="button" class="btn btn-success">Passed</button></td>
       </tr>
     </table>

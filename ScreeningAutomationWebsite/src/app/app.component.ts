@@ -10,6 +10,7 @@ import { EmployeeScreening } from './shared/model/employee-screening';
 export class AppComponent implements OnInit {
 
   private employeeScreenings: Array<EmployeeScreening>;
+  private commonEmail: string;
   constructor(
     private employeeScreeningService: EmployeeScreeningService
   ) {
@@ -19,6 +20,12 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.employeeScreeningService.getEmployeeScreenings().subscribe(result => {
       this.employeeScreenings = result;
+    }, error => console.error(error));
+  }
+
+  checkScreenings() {
+    this.employeeScreeningService.checkScreenings(this.commonEmail).subscribe(result => {
+
     }, error => console.error(error));
   }
 }

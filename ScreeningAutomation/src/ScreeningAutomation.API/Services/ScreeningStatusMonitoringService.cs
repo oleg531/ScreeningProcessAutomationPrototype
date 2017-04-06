@@ -56,6 +56,7 @@
                         string.Join(", ", r.Select(x => x.ScreeningTest.Name)))))
                 .ToList();
 
+            
             var commonEmailTask = Task.Run(() =>
             {
                 var messageNotPassed = string.Join(" Email: ",

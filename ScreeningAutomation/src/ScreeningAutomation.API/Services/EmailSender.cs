@@ -1,5 +1,6 @@
 ﻿namespace ScreeningAutomation.API.Services
 {
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using MimeKit;
     using MimeKit.Text;
@@ -10,6 +11,7 @@
     public class EmailSender : IEmailSender
     {
         private readonly IOptions<EmailSenderOptions> _emailOptionsAccessor;
+        private const string emailPattern = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
 
         public EmailSender(IOptions<EmailSenderOptions> emailOptioinsAccessor)
         {
@@ -18,6 +20,14 @@
 
         public async Task SendEmailAsync(string email, string subject, string message)
         {
+            var regex = new Regex(emailPattern);
+            var match = regex.Match(email);
+            if (!match.Success)
+            {
+                // todo throw exeption here
+                return;
+            }                
+
             var emailMessage = new MimeMessage();
 
             emailMessage.From.Add(new MailboxAddress("Screening automation tool", "DoNotReply@screening.microsoft.com"));

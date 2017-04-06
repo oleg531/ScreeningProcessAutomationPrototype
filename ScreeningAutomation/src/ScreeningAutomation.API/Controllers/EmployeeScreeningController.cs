@@ -52,5 +52,13 @@ namespace ScreeningAutomation.API.Controllers
         public void Delete(int id)
         {
         }
+
+        [HttpGet()]
+        [Route("CheckScreenings/{email}")]
+        public async Task<IActionResult> CheckScreenings(string email)
+        {
+            await _screeningStatusMonitoringService.CheckScreeningsStatus(email);
+            return Ok();
+        }
     }
 }

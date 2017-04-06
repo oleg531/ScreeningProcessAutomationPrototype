@@ -74,6 +74,8 @@
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            loggerFactory.AddFile("Logs/myapp-{Date}.txt");
+
             //CORS            
             app.UseCors(builder =>
                 builder.WithOrigins(Configuration["FrontEndSiteBaseAddress"])

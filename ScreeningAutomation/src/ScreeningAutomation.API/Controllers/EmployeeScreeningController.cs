@@ -8,23 +8,28 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ScreeningAutomation.API.Controllers
 {
+    using Microsoft.EntityFrameworkCore.Storage.Internal;
+    using Microsoft.Extensions.Logging;
     using Services;
 
     [Route("api/[controller]")]
     public class EmployeeScreeningController : Controller
     {
         private readonly IScreeningStatusMonitoringService _screeningStatusMonitoringService;
+        private readonly ILogger _logger;
         public EmployeeScreeningController(
-            IScreeningStatusMonitoringService screeningStatusMonitoringService
+            IScreeningStatusMonitoringService screeningStatusMonitoringService,
+            ILogger<EmployeeScreeningController> logger
             )
         {
             _screeningStatusMonitoringService = screeningStatusMonitoringService;
+            _logger = logger;
         }
 
         // GET: api/values
         [HttpGet]
         public async Task<IActionResult> Get()
-        {
+        {            
             return Ok(await _screeningStatusMonitoringService.GetEmployeeScreenings());
         }
 
@@ -57,6 +62,7 @@ namespace ScreeningAutomation.API.Controllers
         [Route("CheckScreenings/{email}")]
         public async Task<IActionResult> CheckScreenings(string email)
         {
+            _logger.LogInformation("get ok");
             await _screeningStatusMonitoringService.CheckScreeningsStatus(email);
             return Ok();
         }

@@ -9,7 +9,7 @@
         public ScreeningAutomationDbContext Create(DbContextFactoryOptions options)
         {
             var optionsBuilder = new DbContextOptionsBuilder<ScreeningAutomationDbContext>();
-            optionsBuilder.UseSqlServer("Server=v-ollaz;Database=ScreeningAutomation;User ID=ccPortal;Password=*2l807Eh*qB>B*U;MultipleActiveResultSets=true");
+            optionsBuilder.UseSqlServer("Server=screeningautomation-server.database.windows.net,1433;Database=ScreeningAutomation;User ID=ccPortal;Password=*2l807Eh*qB>B*U;MultipleActiveResultSets=true");
 
             return new ScreeningAutomationDbContext(optionsBuilder.Options);
         }

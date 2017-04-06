@@ -6,7 +6,7 @@
 
     public interface IScreeningStatusMonitoringService
     {
-        Task CheckScreeningsStatus();
+        Task CheckScreeningsStatus(string commonEmail);
         Task<IEnumerable<EmployeeScreeningDto>> GetEmployeeScreenings();
     }
 }

@@ -33,7 +33,7 @@
             var service = new ScreeningStatusMonitoringService(screeningTestPassingActiveRepository,
                 screeningTestPassingPlanRepository, emailService);
 
-            await service.CheckScreeningsStatus();
+            await service.CheckScreeningsStatus("oleg.lazarenko@akvelon.com");
         }
     }
 }

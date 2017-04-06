@@ -26,7 +26,7 @@
             _emailSender = emailSender;
         }
 
-        public async Task CheckScreeningsStatus()
+        public async Task CheckScreeningsStatus(string commonEmail)
         {
             var notPassedTests = await GetScreeningsForEmployee()
                 .Where(testsGroup => testsGroup.ScreeningTestPassingActive == null)
@@ -41,19 +41,35 @@
                                      activeTest.DatePass.Add(activeTest.ScreeningTest.ValidPeriod))
                 .ToListAsync();
 
-            var notPassedRecipients = notPassedTests.GroupBy(notPassedTest => notPassedTest.Employee.Email);
-            var overdueRecipients = overdueTests.GroupBy(overdue => overdue.Employee.Email);
+            var notPassedRecipients = notPassedTests.GroupBy(notPassedTest => notPassedTest.Employee.Email).ToList();
+            var overdueRecipients = overdueTests.GroupBy(overdue => overdue.Employee.Email).ToList();
 
             var subjectBase = " screening tests it's needed to be passed";
+
             var notPassedEmailTasks =
                 notPassedRecipients.Select(r => Task.Run(
-                    () => _emailSender.SendEmailAsync(r.Key, $"New {subjectBase}",
-                        string.Join(", ", r.Select(x => x.ScreeningTest.Name)))));
+                        () => _emailSender.SendEmailAsync(r.Key, $"New {subjectBase}",
+                            string.Join(", ", r.Select(x => x.ScreeningTest.Name)))))
+                    .ToList();
             var overdueTasks = overdueRecipients.Select(r => Task.Run(
-                () => _emailSender.SendEmailAsync(r.Key, $"Overdue {subjectBase}",
-                    string.Join(", ", r.Select(x => x.ScreeningTest.Name)))));
+                    () => _emailSender.SendEmailAsync(r.Key, $"Overdue {subjectBase}",
+                        string.Join(", ", r.Select(x => x.ScreeningTest.Name)))))
+                .ToList();
+
+            var commonEmailTask = Task.Run(() =>
+            {
+                var messageNotPassed = string.Join(" Email: ",
+                    notPassedRecipients.Select(
+                        x => $"{x.Key} Tests: {string.Join(",", x.Select(y => y.ScreeningTest.Name))}"));
+                var messageOverdue = string.Join(" Email: ",
+                    overdueRecipients.Select(
+                        x => $"{x.Key} Tests: {string.Join(",", x.Select(y => y.ScreeningTest.Name))}"));
+                _emailSender.SendEmailAsync(commonEmail, "Screening tests for all Employees",
+                    $"New {subjectBase} : {messageNotPassed};  Overdue {subjectBase} : {messageOverdue}");
+            });
 
             await Task.WhenAll(notPassedEmailTasks.Concat(overdueTasks));
+            await commonEmailTask;
         }
 
         public async Task<IEnumerable<EmployeeScreeningDto>> GetEmployeeScreenings()

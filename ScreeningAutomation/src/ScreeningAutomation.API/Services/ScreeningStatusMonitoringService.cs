@@ -28,17 +28,9 @@
 
         public async Task CheckScreeningsStatus()
         {
-            var notPassedTests = await _screeningTestPassingPlanRepository.GetAll()
-                .Include(planningTest => planningTest.Employee)
-                .Include(planningTest => planningTest.ScreeningTest)
-                .GroupJoin(_screeningTestPassingActiveRepository.GetAll(),
-                    plannedTest => new {plannedTest.EmployeeId, plannedTest.ScreeningTestId},
-                    activeTest => new {activeTest.EmployeeId, activeTest.ScreeningTestId},
-                    (plannedTest, activeTestCollection) => new {plannedTest, activeTestCollection})
-                .SelectMany(group => group.activeTestCollection.DefaultIfEmpty(),
-                    (group, activeTest) => new {PlanedTest = group.plannedTest, ActiveTest = activeTest})
-                .Where(testsGroup => testsGroup.ActiveTest == null)
-                .Select(testsGroup => testsGroup.PlanedTest)
+            var notPassedTests = await GetScreeningsForEmployee()
+                .Where(testsGroup => testsGroup.ScreeningTestPassingActive == null)
+                .Select(testsGroup => testsGroup.ScreeningTestPassingPlan)
                 .ToListAsync();
 
 
@@ -66,22 +58,50 @@
 
         public async Task<IEnumerable<EmployeeScreeningDto>> GetEmployeeScreenings()
         {
-            // todo add not passed tests
-            return await _screeningTestPassingActiveRepository.GetAll()
-                .Include(activeTest => activeTest.Employee)
-                .Include(activeTest => activeTest.ScreeningTest)
-                .Select(activeTest => new EmployeeScreeningDto
+            var screeningTests = await GetScreeningsForEmployee().ToListAsync();
+
+            return screeningTests
+                .Select(screeningTest => new EmployeeScreeningDto
                 {
-                    Email = activeTest.Employee.Email,
-                    Alias = activeTest.Employee.Alias,
-                    ScreeningTestName = activeTest.ScreeningTest.Name,
-                    DatePass = activeTest.DatePass,
-                    ExpirationDate = activeTest.DatePass.Add(activeTest.ScreeningTest.ValidPeriod),
-                    Status = DateTimeOffset.UtcNow > activeTest.DatePass.Add(activeTest.ScreeningTest.ValidPeriod)
-                        ? ScreeningTestPassingStatus.Overdue.ToString()
-                        : ScreeningTestPassingStatus.Valid.ToString()
-                })
-                .ToListAsync();
+                    Email = screeningTest.ScreeningTestPassingPlan.Employee.Email,
+                    Alias = screeningTest.ScreeningTestPassingPlan.Employee.Alias,
+                    ScreeningTestName = screeningTest.ScreeningTestPassingPlan.ScreeningTest.Name,
+                    DatePass = screeningTest.ScreeningTestPassingActive?.DatePass,
+                    ExpirationDate = screeningTest.ScreeningTestPassingActive?.DatePass.Add(screeningTest
+                        .ScreeningTestPassingPlan.ScreeningTest.ValidPeriod),
+                    Status = screeningTest.ScreeningTestPassingActive == null
+                        ? ScreeningTestPassingStatus.NotPassed.ToString()
+                        : DateTimeOffset.UtcNow >
+                          screeningTest.ScreeningTestPassingActive.DatePass.Add(screeningTest
+                              .ScreeningTestPassingPlan.ScreeningTest.ValidPeriod)
+                            ? ScreeningTestPassingStatus.Overdue.ToString()
+                            : ScreeningTestPassingStatus.Valid.ToString()
+                });
         }
+
+        private IQueryable<ScreeningTestProxy> GetScreeningsForEmployee()
+        {
+            return _screeningTestPassingPlanRepository.GetAll()
+                .Include(planningTest => planningTest.Employee)
+                .Include(planningTest => planningTest.ScreeningTest)
+                .GroupJoin(_screeningTestPassingActiveRepository.GetAll(),
+                    plannedTest => new {plannedTest.EmployeeId, plannedTest.ScreeningTestId},
+                    activeTest => new {activeTest.EmployeeId, activeTest.ScreeningTestId},
+                    (plannedTest, activeTestCollection) => new {plannedTest, activeTestCollection})
+                .SelectMany(group => group.activeTestCollection.DefaultIfEmpty(),
+                    (group, activeTest) => new ScreeningTestProxy
+                    {
+                        ScreeningTestPassingPlan = group.plannedTest,
+                        ScreeningTestPassingActive = activeTest
+                    });
+        }
+
+
+    }
+
+    internal class ScreeningTestProxy
+    {
+        public ScreeningTestPassingPlan ScreeningTestPassingPlan { get; set; }
+        public ScreeningTestPassingActive ScreeningTestPassingActive { get; set; }
     }
 }
